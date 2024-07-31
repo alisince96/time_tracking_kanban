@@ -111,7 +111,6 @@ class _CreateTaskState extends State<CreateTask> {
                             final params = CreateTaskReq(
                               content: titleController.text,
                               description: descriptionController.text,
-                              sectionId: AppConsts.todoSectionId,
                               createdAt: DateTime.now().toIso8601String(),
                             );
                             context.read<CreateTaskCubit>().createTask(params);

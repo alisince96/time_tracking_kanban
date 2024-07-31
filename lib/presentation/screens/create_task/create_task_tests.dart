@@ -5,7 +5,6 @@ import 'package:time_tracking_app/data/models/create_task_req.dart';
 import 'package:time_tracking_app/data/models/task_response.dart';
 import 'package:time_tracking_app/presentation/screens/create_task/create_task_cubit.dart';
 import 'package:time_tracking_app/domain/repository/task_repository.dart';
-import 'package:time_tracking_app/shared/app_consts/app_consts.dart';
 import 'package:time_tracking_app/shared/states/generic_states.dart';
 
 class MockTaskRepository extends Mock implements TaskRepository {
@@ -33,7 +32,6 @@ void main() {
       build: () => createTaskCubit,
       act: (cubit) => cubit.createTask(CreateTaskReq(
         content: 'filter task',
-        sectionId: AppConsts.todoSectionId,
       )),
       expect: () => [LoadingState(), ErrorState('')],
     );

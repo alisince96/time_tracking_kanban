@@ -46,18 +46,21 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double marginHorizontal = horizontalMargin ?? context.width * 0.05;
+    final double containerWidth = width ?? context.width;
+    final double containerHeight = height ?? 60;
+
     return Container(
-      height: height ?? 60,
-      width: width ?? context.width,
-      margin: EdgeInsets.symmetric(
-          horizontal: horizontalMargin ?? context.width * 0.05),
+      height: containerHeight,
+      width: containerWidth,
+      margin: EdgeInsets.symmetric(horizontal: marginHorizontal),
       child: TextField(
         controller: controller,
         style: style,
         readOnly: readOnly ?? false,
         onTap: onTap,
         focusNode: focusNode,
-        onChanged: (var value) {
+        onChanged: (String value) {
           if (onChanged != null) {
             onChanged!(value);
           }
@@ -65,43 +68,58 @@ class CustomTextField extends StatelessWidget {
         obscureText: isObsecure ?? false,
         maxLength: maxLength,
         keyboardType: keyboardType,
-        decoration: showPrefixIcon == true
-            ? InputDecoration(
-                prefixIcon: prefixIcon,
-                counterText: '',
-                suffixIcon: suffixIcon ?? const SizedBox(),
-                fillColor: Colors.white,
-                filled: true,
-                enabledBorder: wantBorder == false
-                    ? null
-                    : OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: borderColor ?? Colors.grey, width: 0.0),
-                      ),
-                border: wantBorder == false ? null : const OutlineInputBorder(),
-                hintText: hintText ?? '',
-                hintStyle: hintStyle,
-                contentPadding:
-                    const EdgeInsets.only(left: 15.0, top: 5.0, right: 15),
-              )
-            : InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-                counterText: '',
-                suffixIcon: suffixIcon ?? const SizedBox(),
-                enabledBorder: wantBorder == false
-                    ? null
-                    : OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: borderColor ?? Colors.grey, width: 0.0),
-                      ),
-                border: wantBorder == false ? null : const OutlineInputBorder(),
-                hintText: hintText ?? '',
-                hintStyle: hintStyle ?? AppConsts.greenNormal15,
-                contentPadding:
-                    const EdgeInsets.only(left: 15.0, top: 5.0, right: 15),
-              ),
+        decoration: _buildDecoration(context),
       ),
     );
+  }
+
+  InputDecoration _buildDecoration(BuildContext context) {
+    return showPrefixIcon == true
+        ? _buildDecorationWithPrefixIcon(context)
+        : _buildDefaultDecoration(context);
+  }
+
+  InputDecoration _buildDecorationWithPrefixIcon(BuildContext context) {
+    return InputDecoration(
+      prefixIcon: prefixIcon,
+      counterText: '',
+      suffixIcon: suffixIcon ?? const SizedBox(),
+      fillColor: Colors.white,
+      filled: true,
+      enabledBorder: _buildEnabledBorder(context),
+      border: _buildBorder(),
+      hintText: hintText ?? '',
+      hintStyle: hintStyle,
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+    );
+  }
+
+  InputDecoration _buildDefaultDecoration(BuildContext context) {
+    return InputDecoration(
+      fillColor: Colors.white,
+      filled: true,
+      counterText: '',
+      suffixIcon: suffixIcon ?? const SizedBox(),
+      enabledBorder: _buildEnabledBorder(context),
+      border: _buildBorder(),
+      hintText: hintText ?? '',
+      hintStyle: hintStyle ?? AppConsts.blackNormal15,
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+    );
+  }
+
+  OutlineInputBorder? _buildBorder() {
+    return wantBorder == false ? null : const OutlineInputBorder();
+  }
+
+  OutlineInputBorder? _buildEnabledBorder(BuildContext context) {
+    final Color borderColor = this.borderColor ?? Colors.grey;
+    return wantBorder == false
+        ? null
+        : OutlineInputBorder(
+            borderSide: BorderSide(color: borderColor, width: 0.0),
+          );
   }
 }

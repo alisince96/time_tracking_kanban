@@ -13,25 +13,29 @@ class BaseScreen extends StatefulWidget {
 
 class _BaseScreenState extends State<BaseScreen> {
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppConsts.appGrey,
-        appBar: widget.wantAppbar
-            ? AppBar(
-                scrolledUnderElevation: 0.0,
-                backgroundColor: AppConsts.appGrey,
-                leading: Visibility(
-                  visible: context.canPop(),
-                  child: GestureDetector(
-                    onTap: () => context.pop(),
-                    child: const Icon(
-                      Icons.arrow_back,
-                      size: 25,
-                    ),
-                  ),
-                ),
-              )
-            : null,
-        body: widget.body);
+      backgroundColor: AppConsts.appGrey,
+      appBar: widget.wantAppbar ? _buildAppBar(context) : null,
+      body: widget.body,
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      scrolledUnderElevation: 0.0,
+      backgroundColor: AppConsts.appGrey,
+      leading: Visibility(
+        visible: context.canPop(),
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(
+            Icons.arrow_back,
+            size: 25,
+          ),
+        ),
+      ),
+    );
   }
 }
