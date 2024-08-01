@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracking_app/core/extensions/context_ext.dart';
+import 'package:time_tracking_app/core/extensions/date_time_ext.dart';
 import 'package:time_tracking_app/core/extensions/string_ext.dart';
 import 'package:time_tracking_app/data/models/task_response.dart';
 import 'package:time_tracking_app/shared/app_consts/app_consts.dart';
@@ -15,7 +16,7 @@ class TaskCard extends StatelessWidget {
   bool get showComments => comments > 0;
   String get content => task.content ?? '';
   String get description => task.description ?? '';
-  int? get timeSpent => task.timeSpent?.inHours;
+  Duration? get timeSpent => task.timeSpent;
   String get createdAt =>
       task.createdAt?.toIso8601String().split('T').first ?? '';
   String get startTime => task.startTime?.toString().split('.').first ?? '';
@@ -29,17 +30,17 @@ class TaskCard extends StatelessWidget {
         padding: padding ?? EdgeInsets.zero,
         child: Container(
           width: context.width,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: AppConsts.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.grey,
+                color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 1,
                 blurRadius: 1,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               )
             ],
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -74,7 +75,7 @@ class TaskCard extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 10, right: 10, top: 5, bottom: 5),
                       child: Text(
-                        'Time spent: $timeSpent h',
+                        'Time spent: ${timeSpent?.format()}',
                         style: AppConsts.blackNormal15.copyWith(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,

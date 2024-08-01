@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 
@@ -27,7 +28,7 @@ class TasksCubit extends Cubit<GenericStates> with TasksMixin {
   // - LoadingState: when the function starts fetching tasks.
   // - TasksFetched: when the function successfully fetches tasks and prepares them for display.
   // - ErrorState: when there is an error while fetching tasks.
-  void getTasks() async {
+  Future<void> getTasks() async {
     try {
       // Emit a LoadingState to indicate that tasks are being fetched.
       emit(LoadingState());
@@ -74,27 +75,31 @@ class TasksCubit extends Cubit<GenericStates> with TasksMixin {
   /// are checked for existence. If the task has a duration stored, it is
   /// updated with the stored duration.
   Future<void> _fetchTaskDurations(List<TaskResponse> taskList) async {
-    // Iterate over each task in the task list.
-    for (int i = 0; i < taskList.length; i++) {
-      // Get the id of the current task.
-      final taskId = taskList[i].id ?? '';
+    try {
+      // Iterate over each task in the task list.
+      for (int i = 0; i < taskList.length; i++) {
+        // Get the id of the current task.
+        final taskId = taskList[i].id ?? '';
 
-      // Retrieve the JSON string of the stored task from the shared preferences.
-      final storedTaskJson = await preferencesManager.retrieveString(taskId);
+        // Retrieve the JSON string of the stored task from the shared preferences.
+        final storedTaskJson = await preferencesManager.retrieveString(taskId);
 
-      // Check if there is a stored task.
-      if (storedTaskJson != null) {
-        // Decode the stored task JSON string into a TaskResponse object.
-        final storedTask = TaskResponse.fromJson(jsonDecode(storedTaskJson));
+        // Check if there is a stored task.
+        if (storedTaskJson != null) {
+          // Decode the stored task JSON string into a TaskResponse object.
+          final storedTask = TaskResponse.fromJson(jsonDecode(storedTaskJson));
 
-        // Update the current task in the task list with the stored task's
-        // duration, start time, and end time.
-        taskList[i] = taskList[i].copyWith(
-          timeSpent: storedTask.timeSpent,
-          startTime: storedTask.startTime,
-          endTime: storedTask.endTime,
-        );
+          // Update the current task in the task list with the stored task's
+          // duration, start time, and end time.
+          taskList[i] = taskList[i].copyWith(
+            timeSpent: storedTask.timeSpent,
+            startTime: storedTask.startTime,
+            endTime: storedTask.endTime,
+          );
+        }
       }
+    } catch (e) {
+      log(e.toString());
     }
   }
 

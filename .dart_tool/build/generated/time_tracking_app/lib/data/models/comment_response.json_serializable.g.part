@@ -1,0 +1,30 @@
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
+      content: json['content'] as String?,
+      id: json['id'] as String?,
+      postedAt: json['posted_at'] == null
+          ? null
+          : DateTime.parse(json['posted_at'] as String),
+      projectId: json['project_id'],
+      taskId: json['task_id'] as String?,
+    );
+
+Map<String, dynamic> _$CommentToJson(Comment instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('content', instance.content);
+  writeNotNull('id', instance.id);
+  writeNotNull('posted_at', instance.postedAt?.toIso8601String());
+  writeNotNull('project_id', instance.projectId);
+  writeNotNull('task_id', instance.taskId);
+  return val;
+}

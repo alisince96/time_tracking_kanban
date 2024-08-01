@@ -20,7 +20,7 @@ class CreateTaskCubit extends Cubit<GenericStates> {
   // 2. It calls the `createTask` method of the `taskRepository` object and awaits the response.
   // 3. If the operation is successful, it emits a `CreateTaskSuccess` object with the response from the server.
   // 4. If an error occurs, it emits an `ErrorState` object with the error message.
-  void createTask(CreateTaskReq createTaskReq) async {
+  Future<void> createTask(CreateTaskReq createTaskReq) async {
     try {
       // Emit a LoadingState object to indicate that the operation is in progress.
       emit(LoadingState());

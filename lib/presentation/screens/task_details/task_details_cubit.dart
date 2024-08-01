@@ -24,7 +24,7 @@ class TaskDetailsCubit extends Cubit<GenericStates> {
   //
   // Note: The taskRepository object is responsible for communicating with the data source
   // (e.g., the database or API) to perform the actual operation.
-  void addComment(Comment params) async {
+  Future<void> addComment(Comment params) async {
     try {
       // Emit a LoadingState object to indicate that the operation is in progress.
       emit(LoadingState());
@@ -59,7 +59,7 @@ class TaskDetailsCubit extends Cubit<GenericStates> {
   //
   // Note: The taskRepository object is responsible for communicating with the data source
   // (e.g., the database or API) to perform the actual operation.
-  void getComments(String taskId) async {
+  Future<void> getComments(String taskId) async {
     try {
       // Emit a LoadingState object to indicate that the operation is in progress.
       emit(LoadingState());
@@ -98,7 +98,8 @@ class TaskDetailsCubit extends Cubit<GenericStates> {
   //
   // Note: The taskRepository object is responsible for communicating with the data source
   // (e.g., the database or API) to perform the actual operation.
-  void updateTask({required String taskId, TaskResponse? params}) async {
+  Future<void> updateTask(
+      {required String taskId, TaskResponse? params}) async {
     try {
       // Emit a LoadingState object to indicate that the operation is in progress.
       emit(LoadingState());
