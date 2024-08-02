@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:time_tracking_app/data/models/comment_response.dart';
 import 'package:time_tracking_app/data/models/task_response.dart';
 import 'package:time_tracking_app/domain/repository/task_repository.dart';
@@ -34,6 +35,9 @@ class TaskDetailsCubit extends Cubit<GenericStates> {
 
       // Emit a CommentAddedSuccess object with the result of the operation.
       emit(CommentAddedSuccess(response));
+    } on DioException {
+      // If there is a dio exception, emit an ErrorState with the error message.
+      emit(ErrorState('No Internet Connection'));
     } catch (e) {
       // Emit an ErrorState object with the error message if an error occurs.
       emit(ErrorState(e.toString()));
@@ -71,6 +75,9 @@ class TaskDetailsCubit extends Cubit<GenericStates> {
       // Emit a CommentsFetched object with the result of the operation.
       // The result is a list of Comment objects.
       emit(CommentsFetched(comments: response));
+    } on DioException {
+      // If there is a dio exception, emit an ErrorState with the error message.
+      emit(ErrorState('No Internet Connection'));
     } catch (e) {
       // Emit an ErrorState object with the error message if an error occurs.
       // The error message is obtained by calling the toString() method on the exception object.
@@ -113,6 +120,9 @@ class TaskDetailsCubit extends Cubit<GenericStates> {
       // Emit a TaskUpdated object with the result of the operation.
       // The result is a TaskResponse object representing the updated task.
       emit(TaskUpdated(response));
+    } on DioException {
+      // If there is a dio exception, emit an ErrorState with the error message.
+      emit(ErrorState('No Internet Connection'));
     } catch (e) {
       // Emit an ErrorState object with the error message if an error occurs.
       // The error message is obtained by calling the toString() method on the exception object.

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:time_tracking_app/data/models/create_task_req.dart';
 import 'package:time_tracking_app/data/models/task_response.dart';
 import 'package:time_tracking_app/domain/repository/task_repository.dart';
@@ -30,6 +31,9 @@ class CreateTaskCubit extends Cubit<GenericStates> {
 
       // Emit a CreateTaskSuccess object with the result of the operation.
       emit(CreateTaskSuccess(response));
+    } on DioException {
+      // If there is a dio exception, emit an ErrorState with the error message.
+      emit(ErrorState('No Internet Connection'));
     } catch (e) {
       // Emit an ErrorState object with the error message if an error occurs.
       emit(ErrorState(e.toString()));

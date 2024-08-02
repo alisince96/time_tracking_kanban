@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 
 import 'package:time_tracking_app/core/services/local_storage_service.dart';
 import 'package:time_tracking_app/data/models/drage_drop_item_extended.dart';
@@ -61,6 +63,9 @@ class TasksCubit extends Cubit<GenericStates> with TasksMixin {
           todoList: todoList,
           inProgressList: inProgressList,
           doneList: doneList));
+    } on DioException {
+      // If there is a dio exception, emit an ErrorState with the error message.
+      emit(ErrorState('No Internet Connection'));
     } catch (e) {
       // If there is an error, emit an ErrorState with the error message.
       emit(ErrorState(e.toString()));
