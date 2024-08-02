@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:time_tracking_app/core/extensions/context_ext.dart';
 import 'package:time_tracking_app/data/models/task_response.dart';
 import 'package:time_tracking_app/domain/mixins/tasks_mixin.dart';
 import 'package:time_tracking_app/presentation/screens/tasks_dashboard/tasks_cubit.dart';
@@ -57,6 +58,15 @@ class _CompletedTasksState extends State<CompletedTasks> with TasksMixin {
                                   const EdgeInsets.only(top: 20, bottom: 5),
                             );
                           }),
+                    if (state is TasksFetched && state.doneList.isEmpty)
+                      SizedBox(
+                        height: context.height * 0.5,
+                        child: Center(
+                          child: Text('No tasks yet',
+                              style: AppConsts.blackNormal15
+                                  .copyWith(fontSize: 20)),
+                        ),
+                      ),
                     const SizedBox(
                       height: 50,
                     ),

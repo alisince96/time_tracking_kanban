@@ -8,7 +8,6 @@ import 'package:time_tracking_app/data/data_source/task_datasource.dart';
 import 'package:time_tracking_app/data/models/task_response.dart';
 import 'package:time_tracking_app/domain/repository/task_repository.dart';
 import 'package:time_tracking_app/presentation/screens/tasks_dashboard/tasks_cubit.dart';
-import 'package:time_tracking_app/shared/states/generic_states.dart';
 
 import 'tasks_tests.mocks.dart';
 

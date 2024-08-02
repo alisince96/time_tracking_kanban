@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:time_tracking_app/domain/bottom_nav_item.dart';
+import 'package:time_tracking_app/presentation/screens/bottom_nav_bar/bottom_nav_item.dart';
 import 'package:time_tracking_app/presentation/screens/bottom_nav_bar/bottom_nav_bar_bloc_cubit.dart';
 import 'package:time_tracking_app/presentation/screens/completed_tasks/completed_tasks.dart';
 import 'package:time_tracking_app/presentation/screens/tasks_dashboard/tasks_dashboard.dart';

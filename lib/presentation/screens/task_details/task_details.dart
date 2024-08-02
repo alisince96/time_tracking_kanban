@@ -8,6 +8,10 @@ import 'package:time_tracking_app/data/models/comment_response.dart';
 import 'package:time_tracking_app/data/models/task_response.dart';
 import 'package:time_tracking_app/domain/mixins/date_time_selection_mixin.dart';
 import 'package:time_tracking_app/presentation/screens/task_details/task_details_cubit.dart';
+import 'package:time_tracking_app/presentation/screens/task_details/widgets/add_comment_widget.dart';
+import 'package:time_tracking_app/presentation/screens/task_details/widgets/all_comments_list.dart';
+import 'package:time_tracking_app/presentation/screens/task_details/widgets/close_button.dart';
+import 'package:time_tracking_app/presentation/screens/task_details/widgets/start_and_end_date_widget.dart';
 import 'package:time_tracking_app/presentation/screens/tasks_dashboard/tasks_cubit.dart';
 import 'package:time_tracking_app/shared/app_consts/app_consts.dart';
 import 'package:time_tracking_app/shared/common_widgets/loader.dart';
@@ -35,6 +39,15 @@ class _TaskDetailsState extends State<TaskDetails> with DateTimePickerMixin {
 
   List<Comment> comments = [];
   @override
+  void dispose() {
+    super.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
+    commentController.dispose();
+  }
+
   @override
   void initState() {
     final task = widget.task;
@@ -43,12 +56,16 @@ class _TaskDetailsState extends State<TaskDetails> with DateTimePickerMixin {
 
     startDate = task.startTime;
     endDate = task.endTime;
-    startDateController.text = task.startTime?.toString() ?? '';
-    endDateController.text = task.endTime?.toString() ?? '';
+    startDateController.text = formatDateTime(startDate);
+    endDateController.text = formatDateTime(endDate);
 
     context.read<TaskDetailsCubit>().getComments(task.id ?? '');
 
     super.initState();
+  }
+
+  String formatDateTime(DateTime? dateTime) {
+    return dateTime?.toIso8601String() ?? '';
   }
 
   @override
@@ -129,100 +146,22 @@ class _TaskDetailsState extends State<TaskDetails> with DateTimePickerMixin {
                           const SizedBox(
                             height: 15,
                           ),
-                          Text('Start Time',
-                              style: AppConsts.blackNormal25.copyWith(
-                                  fontSize: 18, fontWeight: FontWeight.w600)),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          CustomTextField(
-                            controller: startDateController,
-                            hintText: '2 Aug 5:00 PM',
-                            readOnly: true,
-                            onTap: () {
-                              showCustomDateTimePicker(
-                                context,
-                                minimumDate: DateTime.now()
-                                    .subtract(const Duration(days: 365)),
-                                maximumDate: DateTime.now()
-                                    .add(const Duration(days: 365)),
-                                onConfirm: (date) {
-                                  startDate = date;
-                                  startDateController.text = date.toString();
-                                },
-                                initialDate: DateTime.now(),
-                              );
+                          StartAndEndDateWidget(
+                            startDateController: startDateController,
+                            endDateController: endDateController,
+                            startDate: (val) {
+                              startDate = val;
                             },
-                            hintStyle: TextStyle(
-                                color: AppConsts.greyish.withOpacity(0.5),
-                                fontSize: 14),
-                            horizontalMargin: 0,
-                            borderColor: Colors.transparent,
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text('End Time',
-                              style: AppConsts.blackNormal25.copyWith(
-                                  fontSize: 18, fontWeight: FontWeight.w600)),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          CustomTextField(
-                            controller: endDateController,
-                            hintText: '3 Aug 5:00 PM',
-                            readOnly: true,
-                            onTap: () {
-                              showCustomDateTimePicker(
-                                context,
-                                minimumDate: DateTime(2023, 3, 5),
-                                maximumDate: DateTime.now()
-                                    .add(const Duration(days: 365)),
-                                onConfirm: (date) {
-                                  endDate = date;
-                                  endDateController.text = date.toString();
-                                },
-                                initialDate: DateTime.now(),
-                              );
+                            endDate: (val) {
+                              endDate = val;
                             },
-                            hintStyle: TextStyle(
-                                color: AppConsts.greyish.withOpacity(0.5),
-                                fontSize: 14),
-                            horizontalMargin: 0,
-                            borderColor: Colors.transparent,
                           ),
                           const SizedBox(
                             height: 15,
                           ),
-                          Text('Add Comment',
-                              style: AppConsts.blackNormal25.copyWith(
-                                  fontSize: 18, fontWeight: FontWeight.w600)),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          CustomTextField(
-                            controller: commentController,
-                            hintText: 'Comment',
-                            horizontalMargin: 0,
-                            hintStyle: TextStyle(
-                                color: AppConsts.greyish.withOpacity(0.5),
-                                fontSize: 14),
-                            borderColor: Colors.transparent,
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                final params = Comment(
-                                    content: commentController.text,
-                                    taskId: widget.task.id,
-                                    postedAt: DateTime.now());
-                                context
-                                    .read<TaskDetailsCubit>()
-                                    .addComment(params);
-                              },
-                              child: Icon(Icons.send,
-                                  color: commentController.text.isNotEmpty
-                                      ? AppConsts.darkBlue
-                                      : AppConsts.greyish),
-                            ),
+                          AddCommentWidget(
+                            id: widget.task.id ?? '',
+                            commentController: commentController,
                           ),
                           const SizedBox(
                             height: 15,
@@ -236,58 +175,7 @@ class _TaskDetailsState extends State<TaskDetails> with DateTimePickerMixin {
                           const SizedBox(
                             height: 15,
                           ),
-                          ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: AppConsts.white,
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(comments[index].content ?? '',
-                                              style: AppConsts.blackNormal25
-                                                  .copyWith(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w600)),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                  comments[index]
-                                                          .postedAt
-                                                          ?.toIso8601String()
-                                                          .split('T')
-                                                          .first ??
-                                                      '',
-                                                  style: AppConsts.greyNormal15
-                                                      .copyWith(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w600)),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              itemCount: comments.length),
+                          AllCommentsList(comments: comments),
                           SizedBox(
                             height: context.height * 0.1,
                           ),
@@ -295,30 +183,7 @@ class _TaskDetailsState extends State<TaskDetails> with DateTimePickerMixin {
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: 0,
-                    left: 25,
-                    child: Container(
-                      height: 80,
-                      color: AppConsts.appGrey,
-                      width: context.width,
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              color: AppConsts.greyish.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: GestureDetector(
-                                onTap: () => context.pop(),
-                                child: const Icon(Icons.close)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  const CloseButtonWidget(),
                   Positioned(
                     bottom: 0,
                     left: 25,
